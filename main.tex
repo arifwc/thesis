@@ -196,7 +196,7 @@
 
 \section{Introduction}
 
-Large Language Models (LLMs) have recently been in rapid development. For instance in penetration testing domain, LLMs are increasingly being adopted to assist human experts because they can recognise recurring attack patterns and respond flexibly to dynamic or uncertain testing environments \cite{happe_surprising_2025}. One of the LLM-based penetration testing tool PentestGPT \cite{deng_pentestgpt_2024} achieved 111\% more completed sub-tasks than the baseline LLM. Subsequent studies have further extended LLM-based penetration testing towards autonomous operation \cite{kong_vulnbot_2025,gioacchini_autopenbench_2024,huang_penheal_2023,dai_refpentester_2025,xu_autoattacker_2024}. 
+Large Language Models (LLMs) have recently been in rapid development. For instance in penetration testing domain, LLMs are increasingly being adopted to assist human experts because they can recognise recurring attack patterns and respond flexibly to dynamic or uncertain testing environments \cite{happe_surprising_2025}. One of the LLM-based penetration testing tool PentestGPT \cite{deng_pentestgpt_2024} achieved 111\% more completed sub-tasks than the baseline LLM. Subsequent studies have further extended LLM-based penetration testing towards autonomous operation \cite{kong_vulnbot_2025,gioacchini_autopenbench_2024,huang_penheal_2023,dai_refpentester_2025,xu_autoattacker_2024}.
 
 A key challenge in LLM-based penetration testing is the tendency to lose contextual information as the testing process advances through multiple stages. To address this limitation, researchers have proposed practical frameworks designed to support more structured and effective LLM-based penetration testing. Some studies have also incorporated memory mechanisms and external knowledge bases to preserve context and improve the robustness of the generated actions \cite{challita_redteamllm_2025}. However, stronger memorisation may also make it difficult to distinguish between genuine reasoning and the reproduction of previously observed attack patterns. To reduce the influence of memorisation, \citet{zhu_teams_2025} evaluated LLM agents using zero-day vulnerabilities disclosed after the models knowledge cut-off dates, thereby minimising the risk of training data leakage caused by memorisation.
 
@@ -204,13 +204,13 @@ Memorisation in LLMs occurs when a model reproduces sequences from its training 
 
 Therefore, this research conducted by answering two research questions to explore the underexplored area:
 \begin{enumerate}
-    \item RQ1: How effective are LLM-based penetration testing tools on public and private vulnerable machines, and to what extent can memorisation be detected through ground truth matching with existing write-ups and solutions?
-    \item RQ2: How do LLM-based penetration testing tools adapt when constraints, incomplete information, or memory-triggering scenarios are introduced, and does this reveal memorisation as a strength or a weakness?
+  \item RQ1: How effective are LLM-based penetration testing tools on public and private vulnerable machines, and to what extent can memorisation be detected through ground truth matching with existing write-ups and solutions?
+  \item RQ2: How do LLM-based penetration testing tools adapt when constraints, incomplete information, or memory-triggering scenarios are introduced, and does this reveal memorisation as a strength or a weakness?
 \end{enumerate}
 
 The research identified the following key findings based on the research questions:
 \begin{enumerate}
-    \item 
+  \item
 \end{enumerate}
 
 \section{Background}
@@ -246,7 +246,7 @@ In the penetration testing domain, \citet{zhu_teams_2025} used CVEs published af
 
 \subsection{Vulnerable Machines}
 
-This study evaluates LLM-based penetration testing on both public and private vulnerable machines. For the public benchmark, four machines were selected from VulnHub: \textit{The Library: 2}, \textit{Sar}, \textit{Symfonos: 2}, and \textit{CengBox: 2}. These machines were selected because prior research has demonstrated that they can be successfully exploited until root access is obtained, making them suitable for controlled benchmarking. 
+This study evaluates LLM-based penetration testing on both public and private vulnerable machines. For the public benchmark, four machines were selected from VulnHub: \textit{The Library: 2}, \textit{Sar}, \textit{Symfonos: 2}, and \textit{CengBox: 2}. These machines were selected because prior research has demonstrated that they can be successfully exploited until root access is obtained, making them suitable for controlled benchmarking.
 
 The selected public machines were divided into two difficulty categories. \textit{The Library: 2} and \textit{Sar} were categorised as easy machines, while \textit{Symfonos: 2} and \textit{CengBox: 2} were categorised as medium machines. This selection supports both cross-category comparison and within-category comparison. The easy and medium categories allow the study to compare LLM performance across different difficulty levels, while the inclusion of two machines per category helps capture variation within the same difficulty level.
 
@@ -254,7 +254,7 @@ In addition to the public machines, this study also developed four private vulne
 
 \subsection{Large Language Models}
 
-This study uses two LLMs: GPT-4o-2024-05-13 and Llama-3.1-405B-Instruct. These models were selected based on their use in prior research on LLM-based penetration testing. By using these two models, the study can compare the behaviour of different LLMs under the same testing conditions, including their performance on public and private machines, their response to memory-triggering prompts, and their adaptability under mutation-based scenarios.
+This study uses two LLMs: GPT-4o-2024-05-13 and Llama-3.1-405B-Instruct. These models were selected based on their use in prior research on LLM-based penetration testing \cite{isozaki_towards_2025}. By using these two models, the study can compare the behaviour of different LLMs under the same testing conditions, including their performance on public and private machines, their response to memory-triggering prompts, and their adaptability under mutation-based scenarios.
 
 \subsection{Tools}
 
@@ -264,19 +264,19 @@ A modified version of PentestGPT, referred to as MemPentestGPT, was also develop
 
 \subsection{Testing the Suggested Commands}
 
-During the experiment, each command suggested by the LLM-based penetration testing tool was executed and evaluated in the controlled testing environment. A suggested command was marked as successful if it executed correctly and produced information or access that enabled progression to the next penetration testing step. For example, a command could be considered successful if it discovered a new service, identified a useful file, obtained valid credentials, achieved a shell, or supported privilege escalation.
+During the experiment, each command suggested by the LLM-based penetration testing tool was executed and evaluated in the controlled testing environment. A suggested command was marked as successful if it executed correctly and produced information or access that enabled progression to the next penetration testing step. For example, a command could be considered successful if it discovered a new service, identified a useful file, obtained valid credentials, achieved a reverse shell, or supported privilege escalation.
 
-If a suggested command failed, the testing process continued by requesting or following the next suggested action from the LLM. For each specific task, the experiment continued until the LLM no longer provided actionable suggestions or until the remaining suggestions did not appear capable of leading to successful progress. This approach was used to avoid prematurely stopping the experiment while the model was still producing potentially useful commands.
+If a suggested command failed, the testing process continued by requesting or following the next suggested action from the LLM. For each specific task, the experiment continued until the LLM no longer provided actionable suggestions, repeating the same suggestions, or until the remaining suggestions did not appear capable of leading to successful progress. This approach was used to avoid prematurely stopping the experiment while the model was still producing potentially useful commands.
 
-Previous research commonly starts a new task after approximately five failed attempts. Following this practice, repeated failure was used as a practical stopping point when the LLM failed to produce useful progress after several attempts. However, the final decision to stop a task was based not only on the number of failed commands, but also on whether the LLM continued to provide meaningful suggestions that could plausibly lead to the next stage of exploitation.
+\citet{isozaki_towards_2025} in their research starts a new task after approximately five failed attempts. Following this practice, repeated failure was used as a practical stopping point when the LLM failed to produce useful progress after several attempts. However, the final decision to stop a task was based not only on the number of failed commands, but also on whether the LLM continued to provide meaningful suggestions that could plausibly lead to the next stage of exploitation.
 
 \subsection{Mutation Strategies}
 
-This study applies mutation-based reassessment to examine whether the LLM relies on reasoning or memorisation when generating penetration testing commands. The mutation strategies are adapted from previous research on memorisation in LLM-based code repair. However, because this study focuses on penetration testing commands rather than code generation, not all mutation strategies from prior work are applicable.
+This study applies mutation-based assessment to examine whether the LLM relies on reasoning or memorisation when generating command suggestions. The mutation strategies are adapted from previous research on memorisation in LLM-based code repair \cite{kong_demystifying_2025}. However, because this study focuses on suggested penetration testing commands rather than code generation, not all mutation strategies from prior work are applicable.
 
-In LLM-based code repair, mutation strategies such as variable renaming or variable swapping can be used because the model is asked to generate or fix code. In contrast, this study evaluates suggested penetration testing commands and exploitation steps. Therefore, the applicable mutation strategies are limited to masking and omitting key details from the penetration testing context.
+\citet{kong_demystifying_2025} mutation strategies includes variable renaming and variable swapping. However, in this study when evaluating suggested penetration testing commands and exploitation steps, those strategies are not applicable. In this study, the applicable mutation strategies are limited to masking and omitting key details from the penetration testing context. An example of the strategies applied in this study is shown in Figure \ref{fig:mutation_example}.
 
-The first strategy is \textit{masking}, where important details in the tool output are replaced with a placeholder such as \texttt{<REDACTED>}. For example, directory names, file names, or other informative artefacts may be hidden while the general structure of the command output is preserved. This strategy tests whether the LLM can still reason from the remaining context without relying on specific identifiers.
+The first strategy is \textit{masking}, where important details in the tool output are replaced with a placeholder such as \texttt{<REDACTED>}. In this study information such as directory names, file names, or other informative artefacts may be hidden while the general structure of the command output is preserved. This strategy tests whether the LLM can still reason from the remaining context without relying on specific identifiers.
 
 The second strategy is \textit{omission}, where key details are removed more aggressively from the prompt. Unlike masking, which preserves the structure of the original output, omission provides only partial information to the model. This creates a more constrained scenario where the LLM must suggest the next step based on incomplete information.
 
@@ -298,14 +298,18 @@ A suggested command was marked as an exact command match if it appeared in at le
 
 This approach allows the study to measure whether the LLM is producing commands that closely resemble public exploitation write-ups. Exact command matching does not prove memorisation by itself, but it provides evidence of potential memorisation, particularly when the same commands are generated for public machines with widely available write-ups. By comparing exact command matches across public and private machines, as well as across baseline and memory-triggering settings, the study can further assess whether memorisation functions as a strength or weakness in LLM-based penetration testing.
 
+\section{Results and Discussion}
 
+\section{Conclusion}
+
+\section{Limitation}
 %%
 %% The acknowledgments section is defined using the "acks" environment
 %% (and NOT an unnumbered section). This ensures the proper
 %% identification of the section in the article metadata, and the
 %% consistent spelling of the heading.
 \begin{acks}
-To Robert, for the bagels and explaining CMYK and color spaces.
+  To Indonesia Endowment Fund for Education (LPDP) for funding the Master's study and this research.
 \end{acks}
 
 %%
