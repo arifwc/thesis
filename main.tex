@@ -97,7 +97,7 @@
 %% If you are preparing content for an event
 %% sponsored by ACM SIGGRAPH, you must use the "author year" style of
 %% citations and references.
-\citestyle{acmauthoryear}
+\citestyle{acmnumeric}
 
 
 %%
@@ -213,7 +213,7 @@ The research identified the following key findings based on the research questio
   \item
 \end{enumerate}
 
-\section{Background}
+\section{Related Work}
 \subsection{LLM-based Penetration Testing}
 
 LLM-based penetration testing has emerged as an important research direction in cybersecurity, with recent studies exploring how large language models can support or automate different stages of offensive security assessment. Rather than functioning only as general-purpose chatbots, LLMs have increasingly been integrated into penetration testing workflows as assistants or autonomous agents capable of interpreting tool outputs, suggesting commands, planning attack paths, and generating reports. For example, \citet{hilario_generative_2024} examined the use of ShellGPT to support penetration testers across multiple stages, from reconnaissance to exploitation, before using the generated outputs to produce a penetration testing report.
@@ -246,7 +246,7 @@ In the penetration testing domain, \citet{zhu_teams_2025} used CVEs published af
 
 \subsection{Vulnerable Machines}
 
-This study evaluates LLM-based penetration testing on both public and private vulnerable machines. For the public benchmark, four machines were selected from VulnHub: \textit{The Library: 2}, \textit{Sar}, \textit{Symfonos: 2}, and \textit{CengBox: 2}. These machines were selected because prior research has demonstrated that they can be successfully exploited until root access is obtained, making them suitable for controlled benchmarking.
+This study evaluates LLM-based penetration testing on both public and private vulnerable machines. For the public benchmark, four machines were selected from VulnHub: \textit{The Library: 2}, \textit{Sar}, \textit{Symfonos: 2}, and \textit{CengBox: 2}. These machines were selected because prior research \cite{isozaki_towards_2025} has demonstrated that they can be successfully exploited until root access is obtained, making them suitable for controlled benchmarking.
 
 The selected public machines were divided into two difficulty categories. \textit{The Library: 2} and \textit{Sar} were categorised as easy machines, while \textit{Symfonos: 2} and \textit{CengBox: 2} were categorised as medium machines. This selection supports both cross-category comparison and within-category comparison. The easy and medium categories allow the study to compare LLM performance across different difficulty levels, while the inclusion of two machines per category helps capture variation within the same difficulty level.
 
@@ -258,9 +258,9 @@ This study uses two LLMs: GPT-4o-2024-05-13 and Llama-3.1-405B-Instruct. These m
 
 \subsection{Tools}
 
-The main tool used in this study is PentestGPT. PentestGPT was selected because it is one of the established LLM-based penetration testing tools and has been used in previous research to assist penetration testing tasks. In this study, PentestGPT is used as the baseline tool to evaluate how LLMs perform in vulnerable machine exploitation.
+The main tool used in this study is PentestGPT \cite{deng_pentestgpt_2024}. PentestGPT was selected because it is one of the established LLM-based penetration testing tools and has been used in previous research \cite{isozaki_towards_2025} to assist penetration testing tasks. In this study, PentestGPT is used as the baseline tool to evaluate how LLMs perform in vulnerable machine exploitation.
 
-A modified version of PentestGPT, referred to as MemPentestGPT, was also developed to investigate the role of memorisation. MemPentestGPT modifies the prompt by including the vulnerable machine name and the source of the machine. Furthermore, MemPentestGPT also use prompt repetition \cite{leviathan2025prompt} which repeat the vulnerable machine nameme and its source as shown as in . For private vulnerable machines, the source is labelled as \textit{thesis}. This modification is intended to trigger potential memorisation by providing machine-specific identifiers to the LLM. Further details of the PentestGPT and MemPentestGPT implementation will be explained in the following section.
+A modified version of PentestGPT, referred to as MemPentestGPT, was also developed to investigate the role of memorisation. MemPentestGPT modifies the prompt by including the vulnerable machine name and the source of the machine. Furthermore, MemPentestGPT also use prompt repetition \cite{leviathan2025prompt} which repeat the vulnerable machine name and its source as shown as in Figure~?????. For private vulnerable machines, the source is labelled as \textit{thesis}. This modification is intended to trigger potential memorisation by providing machine-specific identifiers to the LLM. Further details of the PentestGPT and MemPentestGPT implementation will be explained in the following section.
 
 \subsection{Testing the Suggested Commands}
 
@@ -268,41 +268,86 @@ During the experiment, each command suggested by the LLM-based penetration testi
 
 If a suggested command failed, the testing process continued by requesting or following the next suggested action from the LLM. For each specific task, the experiment continued until the LLM no longer provided actionable suggestions, repeating the same suggestions, or until the remaining suggestions did not appear capable of leading to successful progress. This approach was used to avoid prematurely stopping the experiment while the model was still producing potentially useful commands.
 
-\citet{isozaki_towards_2025} in their research starts a new task after approximately five failed attempts. Following this practice, repeated failure was used as a practical stopping point when the LLM failed to produce useful progress after several attempts. However, the final decision to stop a task was based not only on the number of failed commands, but also on whether the LLM continued to provide meaningful suggestions that could plausibly lead to the next stage of exploitation.
+\citet{isozaki_towards_2025} in their research starts a new task after five vague answer given for the same task. Following this practice, repeated failure was used as a practical stopping point when the LLM failed to produce useful progress after several attempts. However, the final decision to stop a task was based not only on the number of failed commands, but also on whether the LLM continued to provide meaningful suggestions that could plausibly lead to the next stage of exploitation.
 
 \subsection{Mutation Strategies}
 
-This study applies mutation-based assessment to examine whether the LLM relies on reasoning or memorisation when generating command suggestions. The mutation strategies are adapted from previous research on memorisation in LLM-based code repair \cite{kong_demystifying_2025}. However, because this study focuses on suggested penetration testing commands rather than code generation, not all mutation strategies from prior work are applicable.
+This study applies mutation-based assessment to examine whether the LLM relies on reasoning or memorisation when generating suggestions. The mutation strategies are adapted from previous research on memorisation in LLM-based code repair \cite{kong_demystifying_2025}. However, because this study focuses on suggested penetration testing commands rather than code generation, not all mutation strategies from prior work are applicable.
 
-\citet{kong_demystifying_2025} mutation strategies includes variable renaming and variable swapping. However, in this study when evaluating suggested penetration testing commands and exploitation steps, those strategies are not applicable. In this study, the applicable mutation strategies are limited to masking and omitting key details from the penetration testing context. An example of the strategies applied in this study is shown in Figure \ref{fig:mutation_example}.
+\begin{figure*}[h]
+  \centering
+  \includegraphics[width=\linewidth]{mask_omit_example}
+  \caption{Mask and Omit strategies example}
+  \label{fig:mask_omit_example}
+  \Description{Left: Original input. Middle: Mask strategy. Right: Omit strategy.}
+\end{figure*}
+
+\citet{kong_demystifying_2025} mutation strategies includes variable renaming and variable swapping. However, in this study when evaluating suggested penetration testing commands and exploitation steps, those strategies are not applicable. In this study, the applicable mutation strategies are limited to masking and omitting key details from the penetration testing context. An example of the strategies applied in this study is shown in Figure~\ref{fig:mask_omit_example}.
 
 The first strategy is \textit{masking}, where important details in the tool output are replaced with a placeholder such as \texttt{<REDACTED>}. In this study information such as directory names, file names, or other informative artefacts may be hidden while the general structure of the command output is preserved. This strategy tests whether the LLM can still reason from the remaining context without relying on specific identifiers.
 
-The second strategy is \textit{omission}, where key details are removed more aggressively from the prompt. Unlike masking, which preserves the structure of the original output, omission provides only partial information to the model. This creates a more constrained scenario where the LLM must suggest the next step based on incomplete information.
+The second strategy is \textit{omitting} key details by removing details more aggressively from the input. Unlike masking, which preserves the structure of the original output, omission provides only partial information and no important information. This creates a more constrained scenario where the LLM must suggest the next step based on incomplete information.
 
 These mutation strategies help distinguish between adaptive reasoning and memorised exploitation paths. If the model changes its strategy appropriately when key details are masked or omitted, this suggests that it is adapting to the available evidence. However, if the model continues to suggest the same exploitation sequence despite missing information, this may indicate reliance on memorised knowledge of the vulnerable machine or its public write-ups.
 
+For mutation-based testing, this study provides no additional context to the tool beyond the masked or omitted inputs. To ensures that the tool receives minimal contextual information, allowing the analysis to focus on whether it can adapt to incomplete information or instead relies on user inputs. When the tool suggests a command, the follow-up input is limited to a simple status update. If the suggested command fails, the input is: \textit{Failed, whats next?}. If the suggested command succeeds and the task should continue, the input is: \textit{Done, whats next?}. If the task is successfully completed, the input is: \textit{Success, whats next?}.
+
 \subsection{Ground-Truth Matching for Exact Command Matching}
 
-To further evaluate potential memorisation, this study uses ground-truth matching to compare LLM-generated commands with publicly available exploitation write-ups. The purpose of this analysis is to determine whether the commands suggested by the LLM exactly match commands that appear in existing articles or blog posts describing the exploitation process of the selected public machines.
+To further evaluate potential memorisation, this study uses ground-truth matching to compare LLM-generated commands with publicly available exploitation write-ups. The purpose of this analysis is to determine whether the commands suggested by the LLM exactly match commands that appear in existing articles, walkthroughs, or blog posts describing the exploitation process of the selected public vulnerable machines.
 
-The ground-truth dataset was collected using Google dorking to retrieve public write-ups related to each vulnerable machine. For example, for the \textit{Sar} machine, the following Google query was used:
+Unlike prior research on memorisation by \citet{kong_demystifying_2025}, which uses a single ground-truth source, the official solutions from Defects4J \cite{just_defects4j_2014}, this study uses multiple ground-truth sources collected from public write-ups for each vulnerable machine. In addition, this study follows the approach of \citet{carlini_extracting_2021}, who used internet search to identify memorisation. Building on that, the ground-truth dataset was collected using Google dorking to narrow the search results and retrieve only public write-ups related to each vulnerable machine \cite{long_google_2016}. For example, for the \textit{Sar} machine, the following Google query was used:
 
 \begin{verbatim}
 intitle:"Sar" intext:"nmap" -ai
 \end{verbatim}
 
-This query was used to identify articles that include step-by-step exploitation details. The retrieved articles were then scraped and processed to extract relevant command examples. Regular expressions were then used to compare each command suggested by the LLM against the commands found in the collected write-ups.
+The term \texttt{intext:"nmap"} was included because the reconnaissance phase in most penetration testing frameworks commonly involves Nmap for port scanning \cite{adam_review_pentest_framework_2023}. Since public write-ups for vulnerable machines typically report the initial port-scanning process, this query was used to improve the likelihood of retrieving relevant exploitation write-ups for each machine. The retrieved write-ups were then scraped and processed to extract relevant command examples. Regular expressions were used to identify command patterns and compare each LLM-suggested command against the commands found in the collected public write-ups.
 
-A suggested command was marked as an exact command match if it appeared in at least one of the collected articles after normalisation. During this process, machine-specific values were excluded from the comparison, including file names, IP addresses, hostnames, and target system names. However, wordlists were not excluded, as the choice of wordlist may reflect an important part of the exploitation strategy. Therefore, the matching process focused mainly on the command structure, parameters, and the order of those parameters.
+The Google dorking process identified several public write-up sources for each VulnHub machine. These sources were used as the ground-truth dataset for the command-matching analysis, as shown in Table~\ref{tab:ground_truth_sources}.
 
-This approach allows the study to measure whether the LLM is producing commands that closely resemble public exploitation write-ups. Exact command matching does not prove memorisation by itself, but it provides evidence of potential memorisation, particularly when the same commands are generated for public machines with widely available write-ups. By comparing exact command matches across public and private machines, as well as across baseline and memory-triggering settings, the study can further assess whether memorisation functions as a strength or weakness in LLM-based penetration testing.
+\begin{table}[htbp]
+  \centering
+  \caption{Ground-truth sources collected from public write-ups for each VulnHub machine}
+  \label{tab:ground_truth_sources}
+  \begin{tabular}{ll}
+    \hline
+    \textbf{Machine}        & \textbf{Number of sources} \\
+    \hline
+    \textit{Sar}            & 22                         \\
+    \textit{The Library: 2} & 2                          \\
+    \textit{Symfonos: 2}    & 18                         \\
+    \textit{CengBox: 2}     & 5                          \\
+    \hline
+  \end{tabular}
+\end{table}
+
+A suggested command was marked as an exact command match if it appeared in at least one of the collected write-ups after normalisation. During this process, machine-specific values were excluded from the comparison, including file names, IP addresses, hostnames, and target system names. However, important files such as wordlists were not excluded, because the choice of those files may reflect an important part of the exploitation strategy. Therefore, the matching process focused mainly on the command structure, parameters, and the order of those parameters.
+
+This approach allows the study to measure whether the LLM is producing commands that closely resemble public exploitation write-ups. Exact command matching does not prove memorisation by itself, but it provides evidence of potential memorisation, particularly when the same commands are generated for public machines with widely available write-ups. By comparing exact command matches across public and private machines, as well as across baseline and memory-triggering settings, the study can further assess whether memorisation functions as a strength or weakness in LLM-based penetration testing. Overall the ground truth matching process will look like as shown in Figure \ref{fig:gtm_illustration}.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.5\textwidth]{method}
+  \caption{Ground-truth matching process}
+  \label{fig:gtm_illustration}
+\end{figure}
 
 \section{Results and Discussion}
+\subsection{RQ1. Memorisation Analysis}
+
+\subsection{RQ2. Mutation-Based Analysis}
 
 \section{Conclusion}
 
+
 \section{Limitation}
+
+This study encountered several limitations that could affect the interpretation of the results.
+\begin{itemize}
+  \item
+\end{itemize}
+
 %%
 %% The acknowledgments section is defined using the "acks" environment
 %% (and NOT an unnumbered section). This ensures the proper
