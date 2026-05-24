@@ -45,6 +45,16 @@
 %%
 %%
 \documentclass[acmtog]{acmart}
+\usepackage{multirow}
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset{
+  basicstyle=\ttfamily\footnotesize,
+  breaklines=true,
+  breakatwhitespace=false,
+  columns=fullflexible,
+  frame=single
+}
 %%
 %% \BibTeX command to typeset BibTeX logo in the docs
 \AtBeginDocument{%
@@ -140,7 +150,7 @@
 %% other information printed in the page headers. This command allows
 %% the author to define a more concise list
 %% of authors' names for this purpose.
-\renewcommand{\shortauthors}{Trovato et al.}
+\renewcommand{\shortauthors}{Wicaksono, Arifansyah}
 
 %%
 %% The abstract is a short summary of the work to be presented in the
@@ -210,7 +220,13 @@ Therefore, this research conducted by answering two research questions to explor
 
 The research identified the following key findings based on the research questions:
 \begin{enumerate}
-  \item
+  \item LLM-based penetration testing tools were moderately effective across both public and private vulnerable machines, but their performance was consistently higher on public VulnHub machines. MemPentestGPT generally outperformed the baseline PentestGPT, and GPT-4o generally performed better than Llama-3.1-405B-Instruct. However, the attempt-level results showed that the tools were not consistently reliable, as many unsuccessful commands were produced before a useful command was eventually generated.
+
+  \item Ground-truth matching provided evidence of potential memorisation, particularly on public VulnHub machines. Exact command rates were higher on VulnHub than on private machines, suggesting that publicly available write-ups and repeated solution patterns may have influenced the models' outputs. However, exact command matches on private machines were mostly associated with generic penetration-testing commands, such as \texttt{sudo -l}, and therefore should not be treated as strong evidence of memorisation.
+
+  \item Mutation-based testing showed that both models struggled when key task information was masked or omitted. The Mask condition was less disruptive than the Omit condition, indicating that partial context still helped the models continue the penetration testing process. GPT-4o showed stronger adaptability under mutation than Llama-3.1-405B-Instruct, but both models experienced reduced success rates compared with the original setting.
+
+  \item Memorisation appeared to function as a conditional strength and weakness. In familiar public-machine scenarios, memorisation could help the model reproduce useful commands or known exploitation paths, thereby improving task progress. However, when the task required adaptation to constrained, incomplete, or private-machine settings, memorisation became less useful and could indicate over-reliance on recalled patterns rather than deeper reasoning. Therefore, memorisation in LLM-based penetration testing should be interpreted as context-dependent.
 \end{enumerate}
 
 \section{Related Work}
@@ -246,21 +262,29 @@ In the penetration testing domain, \citet{zhu_teams_2025} used CVEs published af
 
 \subsection{Vulnerable Machines}
 
-This study evaluates LLM-based penetration testing on both public and private vulnerable machines. For the public benchmark, four machines were selected from VulnHub: \textit{The Library: 2}, \textit{Sar}, \textit{Symfonos: 2}, and \textit{CengBox: 2}. These machines were selected because prior research \cite{isozaki_towards_2025} has demonstrated that they can be successfully exploited until root access is obtained, making them suitable for controlled benchmarking.
+This study evaluates LLM-based penetration testing on both public and private vulnerable machines. For the public benchmark, four machines were selected from VulnHub: \textit{The Library: 2}, \textit{Sar}, \textit{Symfonos: 2}, and \textit{CengBox: 2}. These machines were selected because prior research by \citet{isozaki_towards_2025} has successfully demonstrated  exploit steps using PentestGPT until root access is obtained, making them suitable for controlled benchmarking. However, \citet{isozaki_towards_2025} also mentioned PentestGPT did not successfully exploit those machines end to end.
 
 The selected public machines were divided into two difficulty categories. \textit{The Library: 2} and \textit{Sar} were categorised as easy machines, while \textit{Symfonos: 2} and \textit{CengBox: 2} were categorised as medium machines. This selection supports both cross-category comparison and within-category comparison. The easy and medium categories allow the study to compare LLM performance across different difficulty levels, while the inclusion of two machines per category helps capture variation within the same difficulty level.
 
-In addition to the public machines, this study also developed four private vulnerable machines: two easy machines and two medium machines. These private machines were designed to follow the VulnHub difficulty \cite{vulnhub_difficulty}. The purpose of including private machines is to create unseen test cases that are unlikely to have appeared in LLM training data or public write-ups. Therefore, the comparison between public and private machines allows the study to examine whether LLM-based penetration testing tools perform better on machines that may have been memorised compared with machines that require reasoning in a novel environment.
+In addition to the public machines, this study also developed four private vulnerable machines: two easy machines and two medium machines. These private machines were designed to follow the VulnHub difficulty \cite{vulnhub_difficulty}. Moreover, the private machines were designed to use some of the latest vulnerability. The purpose of including private machines is to create unseen test cases that are unlikely to have appeared in LLM training data or public write-ups. Therefore, the comparison between public and private machines allows the study to examine whether LLM-based penetration testing tools perform better on machines that may have been memorised compared with machines that require reasoning in a novel environment.
 
 \subsection{Large Language Models}
 
-This study uses two LLMs: GPT-4o-2024-05-13 and Llama-3.1-405B-Instruct. These models were selected based on their use in prior research on LLM-based penetration testing \cite{isozaki_towards_2025}. By using these two models, the study can compare the behaviour of different LLMs under the same testing conditions, including their performance on public and private machines, their response to memory-triggering prompts, and their adaptability under mutation-based scenarios.
+This study uses two LLMs: GPT-4o-2024-05-13 and Llama-3.1-405B-Instruct. These models were selected based on their use in prior research on LLM-based penetration testing \cite{isozaki_towards_2025}. By using these two models, the study can compare the behaviour of different LLMs under the same testing conditions, including their performance on public and private machines, their response to memory-triggering prompts, and their adaptability under mutation-based scenarios. GPT-4o-2024-05-13 was accessed through the OpenAI API. While Llama-3.1-405B-Instruct was deployed and accessed through cloud inference API \cite{friendliai_2026}.
 
 \subsection{Tools}
 
 The main tool used in this study is PentestGPT \cite{deng_pentestgpt_2024}. PentestGPT was selected because it is one of the established LLM-based penetration testing tools and has been used in previous research \cite{isozaki_towards_2025} to assist penetration testing tasks. In this study, PentestGPT is used as the baseline tool to evaluate how LLMs perform in vulnerable machine exploitation.
 
-A modified version of PentestGPT, referred to as MemPentestGPT, was also developed to investigate the role of memorisation. MemPentestGPT modifies the prompt by including the vulnerable machine name and the source of the machine. Furthermore, MemPentestGPT also use prompt repetition \cite{leviathan2025prompt} which repeat the vulnerable machine name and its source as shown as in Figure~?????. For private vulnerable machines, the source is labelled as \textit{thesis}. This modification is intended to trigger potential memorisation by providing machine-specific identifiers to the LLM. Further details of the PentestGPT and MemPentestGPT implementation will be explained in the following section.
+A modified version of PentestGPT, referred to as MemPentestGPT, was also developed to investigate the role of memorisation. MemPentestGPT modifies the prompt by including the vulnerable machine name and the source of the machine. Furthermore, MemPentestGPT also use prompt repetition \cite{leviathan2025prompt} which repeat the vulnerable machine name and its source as shown as in Figure \ref{fig:mempentestgpt}. For private vulnerable machines, the source is labelled as \textit{thesis}. This modification is intended to trigger potential memorisation by providing machine-specific identifiers to the LLM. Further details of the PentestGPT and MemPentestGPT implementation will be explained in the following section.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{mempentestgpt}
+  \caption{PentestGPT and MemPentestGPT prompt example}
+  \label{fig:mempentestgpt}
+  \Description{Left: Original PentestGPT prompt. Right: MemPentestGPT Prompt.}
+\end{figure}
 
 \subsection{Testing the Suggested Commands}
 
@@ -268,7 +292,7 @@ During the experiment, each command suggested by the LLM-based penetration testi
 
 If a suggested command failed, the testing process continued by requesting or following the next suggested action from the LLM. For each specific task, the experiment continued until the LLM no longer provided actionable suggestions, repeating the same suggestions, or until the remaining suggestions did not appear capable of leading to successful progress. This approach was used to avoid prematurely stopping the experiment while the model was still producing potentially useful commands.
 
-\citet{isozaki_towards_2025} in their research starts a new task after five vague answer given for the same task. Following this practice, repeated failure was used as a practical stopping point when the LLM failed to produce useful progress after several attempts. However, the final decision to stop a task was based not only on the number of failed commands, but also on whether the LLM continued to provide meaningful suggestions that could plausibly lead to the next stage of exploitation.
+\citet{isozaki_towards_2025} starts a new task after five vague answer given for the same task. Following this practice, repeated failure was used as a practical stopping point when the LLM failed to produce useful progress after five attempts. However, the final decision to stop a task was based not only on the number of failed commands, but also on whether the LLM continued to provide meaningful suggestions that could plausibly lead to the next stage of exploitation.
 
 \subsection{Mutation Strategies}
 
@@ -322,9 +346,11 @@ The Google dorking process identified several public write-up sources for each V
   \end{tabular}
 \end{table}
 
+The exploitation steps were categorised into task types and broader task categories directly adapted from PentestGPT \cite{deng_pentestgpt_2024}. However, unlike prior research \cite{isozaki_towards_2025}, this study adopts a more fine-grained unit of analysis while still preserving the original task categories. For example, rather than treating reconnaissance as a single broad task, individual actions such as port scanning, service enumeration, web directory discovery, and version identification were recorded separately where applicable. This approach allows the analysis to capture more detailed patterns in tool behaviour, command usefulness, and progression across different stages of the penetration testing process.
+
 A suggested command was marked as an exact command match if it appeared in at least one of the collected write-ups after normalisation. During this process, machine-specific values were excluded from the comparison, including file names, IP addresses, hostnames, and target system names. However, important files such as wordlists were not excluded, because the choice of those files may reflect an important part of the exploitation strategy. Therefore, the matching process focused mainly on the command structure, parameters, and the order of those parameters.
 
-This approach allows the study to measure whether the LLM is producing commands that closely resemble public exploitation write-ups. Exact command matching does not prove memorisation by itself, but it provides evidence of potential memorisation, particularly when the same commands are generated for public machines with widely available write-ups. By comparing exact command matches across public and private machines, as well as across baseline and memory-triggering settings, the study can further assess whether memorisation functions as a strength or weakness in LLM-based penetration testing. Overall the ground truth matching process will look like as shown in Figure \ref{fig:gtm_illustration}.
+This approach allows the study to measure whether the LLM is producing commands that closely resemble public exploitation write-ups. Exact command matching does not prove memorisation by itself, but it provides evidence of potential memorisation, particularly when the same commands are generated for public machines with widely available write-ups. By comparing exact command matches across public and private machines, as well as across baseline and memory-triggering settings, the study can further assess whether memorisation functions as a strength or weakness in LLM-based penetration testing. Overall the ground truth matching process will look like as shown in Figure~\ref{fig:gtm_illustration}.
 
 \begin{figure}[htbp]
   \centering
@@ -335,46 +361,169 @@ This approach allows the study to measure whether the LLM is producing commands 
 
 \section{Results and Discussion}
 \subsection{RQ1. Memorisation Analysis}
-% ==================================================================================
-% TO-DO: REVIEW FROM HERE
-% ==================================================================================
 
-The results show that LLM-based penetration testing tools were able to complete a meaningful proportion of tasks across both public and private vulnerable machines, but their effectiveness was consistently higher on public VulnHub machines. As shown in Figure 1, all tool - model configurations achieved higher success rates on VulnHub than on the private machines. The strongest configuration was MemPentestGPT with GPT-4o, reaching approximately 78\% success on VulnHub and 61\% on private machines. In contrast, the weakest configuration was PentestGPT with Llama-3.1-405B-Instruct, with around 50\% success on VulnHub and 44\% on private machines. This indicates that public machines were generally easier for the tools to solve, while the private machines created a more challenging and less memorisation-prone setting.
+The results show that LLM-based penetration testing tools were able to complete a meaningful proportion of tasks across both public and private vulnerable machines, but their effectiveness was consistently higher on public VulnHub machines. As shown in Figure~\ref{fig:success_rate_by_machine_llm}, all tool and model configurations achieved higher success rates on VulnHub than on the private machines. The strongest configuration was MemPentestGPT with GPT-4o, reaching 78.1\% success on VulnHub and 62.2\% on private machines. In contrast, the weakest configuration was PentestGPT with Llama-3.1-405B-Instruct, with 50\% success on VulnHub and 45.9\% on private machines. This indicates that public machines were generally easier for the tools to solve, while the private machines created a more challenging and less memorisation-prone setting.
 
-The comparison between PentestGPT and MemPentestGPT further suggests that memory-triggering information improved performance. In Figure 1, MemPentestGPT outperformed the baseline PentestGPT for both LLMs and both sources. For GPT-4o, MemPentestGPT increased the success rate from around 66\% to 78\% on VulnHub, and from around 50\% to 61\% on private machines. A similar improvement is visible for Llama-3.1-405B-Instruct, where MemPentestGPT improved the VulnHub success rate from around 50\% to 65\% and the private-machine success rate from around 44\% to 58\%. This suggests that adding machine/source information helped the model produce more successful penetration-testing suggestions, although this improvement may reflect both better contextualisation and stronger triggering of memorised public solutions.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.5\textwidth]{success_rate_by_machine_llm}
+  \caption{Success Rate by Machine and LLM}
+  \label{fig:success_rate_by_machine_llm}
+\end{figure}
 
-At the attempt level, the tools were less reliable. Figure 2 shows that the attempt success rate was much lower than the overall task success rate. For example, MemPentestGPT with GPT-4o achieved the highest attempt success rate, but this was still only around 33\% on VulnHub and 21\% on private machines. Other configurations mostly ranged between approximately 11\% and 21\%. This indicates that although the tools could eventually solve many tasks, they still produced many unsuccessful commands along the way. Therefore, their effectiveness should not be interpreted as fully autonomous or consistently reliable; rather, the tools were effective when enough attempts were made and when the model eventually converged on a useful command.
+At the attempt level, the tools were less reliable. Figure~\ref{fig:attempt_success_rate_by_machine_llm} shows that the attempt success rate was considerably lower than the overall task success rate. For instance, MemPentestGPT with GPT-4o achieved the highest attempt success rate, but this was still only 32.5\% on VulnHub machines and 21.3\% on private machines. Other configurations mostly ranged between approximately 11\% and 21\%, with GPT-4o generally performing better than Llama-3.1-405B-Instruct. However, Llama-3.1-405B-Instruct appeared to require fewer attempts before reaching a successful command when used with MemPentestGPT. One possible explanation is that mentioning the machine name and its source in the prompt caused Llama-3.1-405B-Instruct to interpret the target as a local vulnerable machine, making it more likely to suggest direct active reconnaissance commands. For example, after the initial prompt, PentestGPT with Llama-3.1-405B-Instruct suggested passive reconnaissance rather than active reconnaissance, such as port scanning. In contrast, MemPentestGPT with Llama-3.1-405B-Instruct directly suggested active reconnaissance. This suggests that the memory-triggering prompt helped the model converge more quickly on actionable commands in some cases. Although the tools could eventually solve many tasks, they still produced many unsuccessful commands along the way. Therefore, their effectiveness should not be interpreted as fully autonomous or consistently reliable. Rather, the tools were effective when enough attempts were made and when the model eventually converged on a useful command.
 
-Evidence of potential memorisation is shown more directly in Figure 3, where exact command matching was higher on VulnHub than on private machines for every configuration. The highest exact command rate appeared in MemPentestGPT with GPT-4o on VulnHub, at approximately 31\%, compared with around 18\% on private machines. Similarly, MemPentestGPT with Llama-3.1-405B-Instruct reached around 27\% exact command matching on VulnHub, compared with around 13\% on private machines. This pattern supports the interpretation that public VulnHub machines, which have widely available write-ups and solutions, are more likely to trigger commands that match existing ground truth materials.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.5\textwidth]{attempt_success_rate_by_machine_llm}
+  \caption{Attempt Success Rate by Machine and LLM}
+  \label{fig:attempt_success_rate_by_machine_llm}
+\end{figure}
 
-However, exact command matching should be interpreted carefully. The private machines also showed non-zero exact command rates, ranging roughly from 13\% to 18\% in Figure 3. Since these machines were privately created and were not expected to have public write-ups, exact matches in the private setting are more likely to come from common penetration-testing commands rather than memorised machine-specific solutions. For example, basic commands such as \texttt{sudo -l}, enumeration commands, or standard privilege-escalation checks may naturally appear across many machines. Therefore, exact command matching provides stronger evidence of memorisation when it occurs on public VulnHub machines and aligns with machine-specific write-ups, but it is weaker evidence when the matched command is a generic command commonly used in penetration testing.
+Evidence of potential memorisation is shown more directly in Figure~\ref{fig:exact_command_rate_by_machine_llm}, where exact command matching was higher on VulnHub than on private machines for every configuration. The highest exact command rate appeared in MemPentestGPT with GPT-4o on VulnHub, at 31.2\%, compared with 18.9\% on private machines. Similarly, MemPentestGPT with Llama-3.1-405B-Instruct reached 28.1\% exact command matching on VulnHub, compared with 13.5\% on private machines. This pattern supports the interpretation that public VulnHub machines, which have widely available write-ups and solutions, are more likely to trigger commands that match existing ground truth materials.
 
-The outcome composition in Figure 4 reinforces this interpretation. Across all configurations, successful tasks were divided into two categories: successes with exact command matches and successes without exact matches. On VulnHub, the green segments, representing "success with exact match", were generally larger than on private machines. For example, VulnHub MemPentestGPT GPT-4o had the largest success-with-exact-match proportion, while private-machine configurations showed smaller exact-match proportions. Nevertheless, Figure 4 also shows that a substantial share of successful tasks did not involve exact command matching. This means that memorisation was detectable, but it did not explain all successful outcomes. The tools also appeared to use general penetration-testing patterns, partial reasoning, or non-identical commands that still advanced the attack.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.5\textwidth]{exact_command_rate_by_machine_llm}
+  \caption{Exact Command Rate by Machine and LLM}
+  \label{fig:exact_command_rate_by_machine_llm}
+\end{figure}
 
-Overall, the answer to RQ1 is that LLM-based penetration testing tools were moderately effective, particularly on public VulnHub machines. GPT-4o generally outperformed Llama-3.1-405B-Instruct, and MemPentestGPT generally outperformed the baseline PentestGPT. The higher success rates, attempt success rates, and exact command rates on VulnHub suggest that public machines benefited from prior exposure to publicly available exploitation patterns. Ground-truth matching therefore reveals evidence of potential memorisation, especially for public machines with existing write-ups. However, memorisation was not the sole explanation for success: many successful tasks did not exactly match ground truth commands, and some exact matches on private machines were likely caused by standard, high-frequency penetration-testing commands. Thus, memorisation appears to be a measurable contributor to performance, but not the only mechanism driving tool effectiveness.
+However, exact command matching should be interpreted carefully. The private machines also showed non-zero exact command rates, ranging roughly from 13\% to 18\% in Figure~\ref{fig:exact_command_rate_by_machine_llm}. Since these machines were privately created and were not expected to have public write-ups, exact matches in the private setting are more likely to come from common penetration-testing commands rather than memorised machine-specific solutions. For example, basic enumeration commands such as \texttt{sudo -l}, or standard privilege-escalation checks may naturally appear across many machines. \citet{happe_llms_2026} in their study also found that the LLMs often generate generate repeated basic enumeration commands. Therefore, exact command matching provides stronger evidence of memorisation when it occurs on public VulnHub machines and aligns with machine-specific write-ups, but it is weaker evidence when the matched command is a generic command commonly used in penetration testing. For example in easy3, both GPT4o and Llama-3.1 were failed to generate exact wordlist for path enumeration, unlike in Cengbox2 that GPT4o was able to suggest exact wordlist. 
+
+Moreover, detail result show that the private machines exhibited little to no improvement in exact command rate when using MemPentestGPT. Among the private machines, only \textit{Easy1} showed an increase, from 0.0\% with PentestGPT to 6.2\% with MemPentestGPT. In contrast, \textit{Easy3} and \textit{Medium1} produced identical exact command rates across both tools, at 18.8\% and 25.0\%, respectively. Notably, \textit{Medium2} showed a decrease when using MemPentestGPT, with the exact command rate declining from 23.1\% to 15.4\%. This suggests that memory-triggering prompts did not substantially improve exact command reproduction on private machines. By contrast, the VulnHub machines generally showed higher exact command rates under MemPentestGPT. \textit{Cengbox2}, \textit{Library2}, and \textit{Symfonos2} all improved when using MemPentestGPT, while \textit{Sar} remained unchanged at 28.6\%, as shown in Table~\ref{tab:exact_command_rate_machine}.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Machine Exact Command Rates}
+  \label{tab:exact_command_rate_machine}
+  \begin{tabular}{llcc}
+    \hline
+    \textbf{Source} & \textbf{Machine Name} & \textbf{PentestGPT} & \textbf{MemPentestGPT} \\
+    \hline
+
+    \multirow{4}{*}{Private} & \textit{Easy1} & 0.0\% & \textbf{6.2\%} \\
+    & \textit{Easy3} & 18.8\% & 18.8\% \\
+    & \textit{Medium1} & 25.0\% & 25.0\% \\
+    & \textit{Medium2} & \textbf{23.1\%} & 15.4\% \\
+    \hline
+
+    \multirow{4}{*}{VulnHub} & \textit{Cengbox: 2} & 31.2\% & \textbf{43.8\%} \\
+    & \textit{The Library: 2} & 12.5\% & \textbf{18.8\%} \\
+    & \textit{Sar} & 28.6\% & 28.6\% \\
+    & \textit{Symfonos: 2} & 22.2\% & \textbf{27.8\%} \\
+    \hline
+  \end{tabular}
+\end{table}
+
+The outcome composition in Figure~\ref{fig:outcome_composition} reinforces this interpretation. Across all configurations, successful tasks were divided into two categories: successes with exact command matches and successes without exact matches. On VulnHub, the green segments, representing "success with exact match", were generally larger than on private machines. For example, VulnHub MemPentestGPT GPT-4o had the largest success-with-exact-match proportion, while private-machine configurations showed smaller exact-match proportions. Nevertheless, Figure~\ref{fig:outcome_composition} also shows that a substantial share of successful tasks did not involve exact command matching. This means that memorisation was detectable, but it did not explain all successful outcomes. The tools also appeared to use general penetration-testing patterns, partial reasoning, or non-identical commands that still advanced the attack.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.5\textwidth]{outcome_composition_by_source_tool_llm}
+  \caption{Outcome Composition by Source, Tool, and Model}
+  \label{fig:outcome_composition}
+\end{figure}
+
+Overall, LLM-based penetration testing tools were moderately effective, particularly on public VulnHub machines. GPT-4o generally outperformed Llama-3.1-405B-Instruct, this is also in line with \citet{happe_llms_2026} where OpenAI models perform better in command generation than Meta-Llama model that sometimes often hallucinate and gives unknown self generated command. Study from \citet{nakano_guided_2025} also mentioned that GPT-4 is performing better than other models in solving HTB machines. Furhtermore, MemPentestGPT generally outperformed the baseline PentestGPT. The higher success rates, attempt success rates, and exact command rates on VulnHub suggest that public machines benefited from prior exposure to publicly available exploitation patterns. Ground-truth matching therefore reveals evidence of potential memorisation, especially for public machines with existing write-ups. However, memorisation was not the sole explanation for success, many successful tasks did not exactly match ground truth commands, and some exact matches on private machines were likely caused by generic suggestion commands, high-frequency penetration-testing commands. Thus, memorisation appears to be a measurable contributor to performance, but not the only mechanism driving tool effectiveness.
 
 
 \subsection{RQ2. Mutation-Based Analysis}
-In this section the study use MemPentestGPT and only test the successful task where both GPT-4o and Llama3.1-405B-Instruct had already succeeded under the original MemPentestGPT setting due to resource limitation. This question tests the adaptability of the tool when task information is constrained through masking or omission. Therefore, the results should be interpreted as an analysis of adaptability after baseline success, rather than as a general benchmark of penetration-testing capability.
+In this section the study use MemPentestGPT because it was showing better result on previous section. Moreover, mutation-based test only tested on the successful task where both GPT-4o and Llama3.1-405B-Instruct had already succeeded under the original MemPentestGPT setting due to resource limitation. This section tests the adaptability of the tool when task information is constrained through masking or omission. Therefore, the results should be interpreted as an analysis of adaptability after baseline success, rather than as a general benchmark of penetration-testing capability. The details of the number of tasks tested is presented on Table~\ref{tab:total_tasks_by_machine}
 
-As shown in Figure 1, mutation reduced the success rate for both models across private and VulnHub machines. In both sources, the Mask setting produced higher success rates than the Omit setting. This suggests that both models were more capable of continuing the task when partial information was still available, while full omission of key contextual details made adaptation more difficult. GPT-4o consistently achieved higher success rates than Llama3.1-405B-Instruct, indicating stronger robustness under mutated task conditions.
+\begin{table}[htbp]
+  \centering
+  \caption{Total Tasks by Source and Machine}
+  \label{tab:total_tasks_by_machine}
+  \begin{tabular}{llr}
+    \hline
+    \textbf{Source} & \textbf{Machine Name} & \textbf{Total Task} \\
+    \hline
+    \multirow{4}{*}{VulnHub}
+    & \textit{The Library: 2} & 5 \\
+    & \textit{Sar} & 7 \\
+    & \textit{Symfonos: 2} & 6 \\
+    & \textit{Cengbox: 2} & 10 \\
+    \hline
+    \multirow{4}{*}{Private}
+    & \textit{Easy1} & 3 \\
+    & \textit{Easy3} & 4 \\
+    & \textit{Medium1} & 7 \\
+    & \textit{Medium2} & 6 \\
+    \hline
+  \end{tabular}
+\end{table}
 
-% ==================================================================================
-% TO-DO: REVIEW FROM HERE
-% ==================================================================================
-The overall model-level comparison in Figure 4 supports this pattern. GPT-4o achieved approximately 39 - 40\% success under Mask and around 29\% under Omit, while Llama3.1-405B-Instruct achieved approximately 35\% and 21\%, respectively. This decline from Mask to Omit indicates that both models still depended substantially on contextual information. Although MemPentestGPT could sometimes continue despite incomplete input, its performance was not stable when important task details were removed.
 
-The attempt-level result in Figure 3 further shows that mutation affected efficiency. Attempt success rates were lower than task-level success rates for both models, particularly under Omit. This means that even when the tool eventually succeeded, it often required multiple attempts. Therefore, the observed successes should not be interpreted as consistently reliable adaptation, but rather as partial adaptation under constrained conditions.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.5\textwidth]{mutation_success_rate_by_source_method_llm}
+  \caption{Mutation based success rate}
+  \label{fig:mutation_sr}
+\end{figure}
 
-The exact-command analysis in Figure 2 shows that exact command reproduction occurred, but at relatively low rates overall. Mask produced higher exact-command rates than Omit, with Llama3.1-405B-Instruct showing the highest exact-command rate under Mask. However, this result must be interpreted carefully. In the private machines, many successful and exact-matching commands were basic penetration-testing commands, such as sudo -l, rather than machine-specific exploit commands. Therefore, exact command matches in the private-machine setting do not necessarily provide strong evidence of memorisation. Instead, they may reflect the model use of common penetration-testing heuristics.
+As shown in Figure~\ref{fig:mutation_sr}, mutation reduced the success rate for both models across private and VulnHub machines. In both sources, the Mask setting produced higher success rates than the Omit setting. This suggests that both models were more capable of continuing the task when partial information was still available, while full omission of key contextual details made adaptation more difficult. GPT-4o consistently achieved higher success rates than Llama3.1-405B-Instruct, indicating stronger robustness under mutated task conditions. However, Llama3.1-405B-Instruct also have higher performance in private machines with omitting key details rather than in VulnHub. 
 
-This distinction is clearer in Figure 6, which compares exact-command rates by source. VulnHub produced higher exact-command rates than private machines, especially under Mask. Since VulnHub machines are public and commonly accompanied by online write-ups, exact command reproduction in this setting is more consistent with potential memorisation. In contrast, the private machines were newly constructed and often relied on standard commands. Therefore, exact matches in private machines are better interpreted as reuse of common techniques, while exact matches in VulnHub machines provide stronger memorisation signals, particularly when the command is specific to the machine, vulnerability, path, credential, or exploit sequence.
+\begin{table}[htbp]
+  \centering
+  \caption{Mutation-Based Attempt Success Rates by Source and Model}
+  \label{tab:mutation_success_rate}
+  \begin{tabular}{llcc}
+    \hline
+    \textbf{Source} & \textbf{Method} & \textbf{GPT-4o} & \textbf{Llama-3.1} \\
+    \hline
+    \multirow{2}{*}{Private}
+    & Mask & 11.3\% (8/71) & 9.3\% (7/75) \\
+    & Omit & 7.7\% (6/78) & 6.3\% (5/79) \\
+    \hline
+    \multirow{2}{*}{VulnHub}
+    & Mask & 11.5\% (11/96) & 9.3\% (10/107) \\
+    & Omit & 7.5\% (8/106) & 4.2\% (5/119) \\
+    \hline
+  \end{tabular}
+\end{table}
 
-The outcome composition in Figure 5 provides the clearest overall answer to RQ2. Across configurations, most tasks fell into the Failed category, indicating that both models struggled when information was constrained. The proportion of Success without exact match was generally larger than Success with exact match, suggesting that most successful mutation cases were not simply reproduced commands. However, Success with exact match still appeared, especially in VulnHub configurations. This indicates that memorisation may have helped in some public-machine tasks, but it was not the dominant source of success across all mutated tasks.
+The attempt success rate result in Table~\ref{tab:mutation_success_rate} further shows that mutation affected efficiency. Attempt success rates were lower than task-level success rates for both models, particularly under Omit. This means that even when the tool eventually succeeded, it often required multiple attempts. Therefore, the observed successes should not be interpreted as consistently reliable adaptation, but rather as partial adaptation under constrained conditions.
 
-Overall, the mutation-based results suggest that memorisation plays a limited and conditional role in MemPentestGPT. It can act as a strength when the mutated task still resembles a known public exploitation path, especially in VulnHub machines where public write-ups may exist. However, in private machines, many successes were driven by standard commands such as sudo -l, so these results are better understood as the model applying general penetration-testing patterns rather than recalling memorised solutions. At the same time, the lower success rates under Omit in Figures 1 and 4, together with the high failure proportions in Figure 5, show that both models struggled when contextual information was removed. This suggests that memorisation alone is insufficient for robust adaptation.
+\begin{table}[htbp]
+  \centering
+  \caption{Exact Command Rates under Mutation by Source and Model}
+  \label{tab:mutation_exact_command_rate}
+  \begin{tabular}{llcc}
+    \hline
+    \textbf{Source} & \textbf{Method} & \textbf{GPT-4o} & \textbf{Llama-3.1} \\
+    \hline
+    \multirow{2}{*}{Private}
+    & Mask & 5.0\% (1/20) & 0.0\% (0/20) \\
+    & Omit & 5.0\% (1/20) & 0.0\% (0/20) \\
+    \hline
+    \multirow{2}{*}{VulnHub}
+    & Mask & 10.7\% (3/28) & 17.9\% (5/28) \\
+    & Omit & 7.1\% (2/28) & 3.6\% (1/28) \\
+    \hline
+  \end{tabular}
+\end{table}
 
-Therefore, in response to RQ2, MemPentestGPT shows partial adaptability under constrained information, but this adaptability is uneven. GPT-4o adapted better than Llama3.1-405B-Instruct, and Mask was less disruptive than Omit. Memorisation appears to be a strength mainly in public-machine scenarios where prior write-ups may guide the model toward known commands. However, when exact matches involve generic commands in private machines, they should not be treated as strong memorisation evidence. In this study, memorisation is therefore best interpreted as a conditional strength in familiar public environments, but a weakness when the task requires deeper adaptation beyond common commands or recalled exploitation patterns.
+The exact-command analysis in Table~\ref{tab:mutation_exact_command_rate} shows that exact command reproduction under mutation was limited overall. In the private-machine setting, exact command matches were almost absent: GPT-4o produced only one exact command match under both Mask and Omit conditions, while Llama-3.1-405B-Instruct produced no exact command matches. VulnHub produced higher exact-command rates than private machines, particularly under the Mask condition, where Llama-3.1-405B-Instruct reached the highest rate at 17.9\% (5/28), followed by GPT-4o at 10.7\% (3/28). Since VulnHub machines are public and commonly accompanied by online write-ups, exact command reproduction in this setting is more consistent with potential memorisation. In the other hand, the Omit condition reduced the exact-command rate for both models on VulnHub, suggesting that removing key information weakened the models ability to reproduce commands exactly. The private machines were newly constructed and often relied on standard commands.
+
+However, these results should be interpreted cautiously. In the private machines, the few exact command matches were largely associated with basic penetration-testing commands, such as \texttt{sudo -l}, rather than machine-specific exploitation commands. Therefore, exact command matches in the private-machine setting do not necessarily provide strong evidence of memorisation. Instead, they may reflect the models use of common penetration-testing heuristics or standard privilege-escalation checks. By contrast, the higher exact-command rates on VulnHub, especially under the Mask condition, are more suggestive of potential memorisation because public machines are more likely to have existing write-ups and repeated solution patterns available online. For example, in the \texttt{Sar} machine, even after key details were masked, Llama-3.1-405B-Instruct generated a reverse-shell payload that closely resemble payloads reported in public write-ups, as shown below:
+
+\begin{lstlisting}
+?plot=;python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("<ATTACKER-IP>",<LISTENER-PORT>));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/bash","-i"]);'
+\end{lstlisting}
+
+\noindent This similarity provides stronger evidence of potential memorisation in the VulnHub setting \cite{reddy2024sar,iihack2020sar}.
+
+In Figure~\ref{fig:mutation_outcome_composition} the experiment shown task cross configurations, which most tasks fell into the Failed category, indicating that both models struggled when information was constrained. The proportion of Success without exact match was generally larger than Success with exact match, suggesting that most successful mutation cases were not simply reproduced commands. However, Success with exact match still appeared, especially in VulnHub configurations. This indicates that memorisation may have helped in some public-machine tasks, but it was not the dominant source of success across all mutated tasks.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.5\textwidth]{mutation_outcome_composition_by_source_tool_llm.png}
+  \caption{Mutation Outcome Composition}
+  \label{fig:mutation_outcome_composition}
+\end{figure}
+
+The mutation-based results suggest that memorisation plays a limited and conditional role in MemPentestGPT. It can act as a strength when the mutated task still resembles a known public exploitation path, especially in VulnHub machines where public write-ups may exist. Therefore, MemPentestGPT shows partial adaptability under constrained information, but this adaptability is uneven. GPT-4o adapted better than Llama3.1-405B-Instruct, and Mask was less disruptive than Omit. Memorisation appears to be a strength mainly in public-machine scenarios where prior write-ups may guide the model toward known commands. However, when exact matches involve generic commands in private machines, it should not be treated as strong memorisation evidence. In this study, memorisation is therefore best interpreted as a conditional strength in familiar public environments, but a weakness when the task requires deeper adaptation beyond common commands or recalled exploitation patterns.
 
 \section{Conclusion}
 
@@ -383,16 +532,21 @@ Therefore, in response to RQ2, MemPentestGPT shows partial adaptability under co
 
 This study encountered several limitations that could affect the interpretation of the results.
 \begin{itemize}
-  \item
-\end{itemize}
+  \item Each experimental condition was executed only once, without repeated trials. As LLM outputs can vary across runs, the absence of repetition limits the ability to measure output stability and statistical variation. Therefore, the results should be interpreted as indicative observations rather than definitive performance estimates.
 
+  \item The experiments were conducted using PentestGPT version 0.14.0. As LLM-based penetration testing tools are actively developed, later versions may produce different results due to changes in prompting structure, tool integration, parsing behaviour, or task management.
+
+  \item The testing process still required human intervention in PentestGPT 0.14.0. Although the LLM-based tools generated commands and suggested next steps, human judgement was needed to execute commands, interpret outputs, decide whether a task had progressed, and determine when no further useful suggestions were available. As a result, the evaluation reflects an assisted penetration testing.
+
+  \item Responses differed across LLMs and tools even when they were tested on the same vulnerable machine. Because different models sometimes suggested different routes, commands, or task sequences, the experiment had to be adjusted based on the response produced in each case. This makes exact one-to-one comparison more difficult, as the tested commands were not always identical across models and tools.
+\end{itemize}
 %%
 %% The acknowledgments section is defined using the "acks" environment
 %% (and NOT an unnumbered section). This ensures the proper
 %% identification of the section in the article metadata, and the
 %% consistent spelling of the heading.
 \begin{acks}
-  To Indonesia Endowment Fund for Education (LPDP) for funding the Master's study and this research.
+  To Indonesia Endowment Fund for Education (LPDP) for funding this research.
 \end{acks}
 
 %%
@@ -405,8 +559,6 @@ This study encountered several limitations that could affect the interpretation 
 %%
 %% If your work has an appendix, this is the place to put it.
 \appendix
-
-\section{Research Methods}
 
 \end{document}
 \endinput

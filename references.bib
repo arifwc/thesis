@@ -137,6 +137,51 @@
   file      = {Preprint PDF:C\:\\Users\\arifw\\Zotero\\storage\\BJ2JYF6W\\Singer et al. - 2025 - On the Feasibility of Using LLMs to Autonomously Execute Multi-host Network Attacks.pdf:application/pdf;Snapshot:C\:\\Users\\arifw\\Zotero\\storage\\HXJRRGDM\\2501.html:text/html}
 }
 
+@article{happe_llms_2026,
+	title = {{LLMs} as {Hackers}: {Autonomous} {Linux} {Privilege} {Escalation} {Attacks}},
+	volume = {31},
+	issn = {1382-3256, 1573-7616},
+	shorttitle = {{LLMs} as {Hackers}},
+	url = {https://link.springer.com/10.1007/s10664-025-10758-3},
+	doi = {10.1007/s10664-025-10758-3},
+	abstract = {Abstract
+            
+              Penetration-testing is crucial for identifying and mitigating system vulnerabilities, with privilege-escalation being a critical subtask involving gaining elevated access to protected resources. The emergence of Large Language Models (LLMs) presents new avenues for automating these security practices by emulating human behavior. However, a comprehensive understanding of LLMs’ efficacy and limitations in performing autonomous Linux privilege-escalation attacks remains underexplored. To address this gap, we introduce
+              hackingBuddyGPT
+              , a fully automated LLM-driven prototype designed for evaluating autonomous Linux privilege-escalation. We curated a novel, publicly available Linux privilege-escalation benchmark comprising distinct, single-vulnerability virtual machines, enabling controlled and reproducible evaluation. Our empirical analysis assesses the quantitative success rates and qualitative operational behaviors of various LLMs—
+              GPT-3.5-Turbo
+              ,
+              GPT-4-Turbo
+              , and
+              Llama3
+              —against baselines of human professional penetration-testers and traditional automated tools. We investigate the impact of context management strategies, different context sizes, and various high-level guidance mechanisms on LLM performance. Results show that
+              GPT-4-Turbo
+              demonstrates high efficacy, successfully exploiting 33–83\% of vulnerabilities, a performance comparable to human penetration testers (75\%). In contrast, local models like
+              Llama3
+              exhibited limited success (0–33\%), and
+              GPT-3.5-Turbo
+              achieved moderate rates (16–50\%).
+              High-level guidance significantly boosts LLM success rates
+              , for instance when using
+              GPT-4-Turbo
+              from 33\% to 66\% (without guidance) or from 66\% to 83\%, while
+              state management through LLM-driven reflection doubled unaided
+              GPT-4-Turbo
+              success rates
+              (from 33\% to 66\%). Qualitative analysis reveals both LLMs’ strengths and weaknesses in generating valid commands and highlights challenges in common-sense reasoning, error handling, and multi-step exploitation, particularly with temporal dependencies. Cost analysis indicates that
+              GPT-4-Turbo
+              can achieve human-comparable performance at competitive costs
+              per exploited vulnerability, especially with optimized context management. Our work provides a baseline for evaluating LLM capabilities in autonomous privilege escalation, guiding future research toward more effective and reliable LLM-guided penetration-testing.},
+	language = {en},
+	number = {3},
+	urldate = {2026-05-24},
+	journal = {Empirical Software Engineering},
+	author = {Happe, Andreas and Kaplan, Aaron and Cito, Jürgen},
+	month = may,
+	year = {2026},
+	pages = {70},
+	file = {Full Text:C\:\\Users\\arifw\\Zotero\\storage\\DP88N9Z7\\Happe et al. - 2026 - LLMs as Hackers Autonomous Linux Privilege Escalation Attacks.pdf:application/pdf},
+}
 
 @misc{goyal_hacking_2025,
   title      = {Hacking, {The} {Lazy} {Way}: {LLM} {Augmented} {Pentesting}},
@@ -189,20 +234,28 @@
   file       = {Preprint PDF:C\:\\Users\\arifw\\Zotero\\storage\\TMCRI58F\\Dai et al. - 2025 - RefPentester A Knowledge-Informed Self-Reflective Penetration Testing Framework Based on Large Lang.pdf:application/pdf;Snapshot:C\:\\Users\\arifw\\Zotero\\storage\\CP9ZFXNU\\2505.html:text/html}
 }
 
-@misc{happe_llms_2025,
-  title      = {{LLMs} as {Hackers}: {Autonomous} {Linux} {Privilege} {Escalation} {Attacks}},
-  shorttitle = {{LLMs} as {Hackers}},
-  url        = {http://arxiv.org/abs/2310.11409},
-  doi        = {10.48550/arXiv.2310.11409},
-  abstract   = {Penetration testing, an essential component of software security testing, allows organizations to identify and remediate vulnerabilities in their systems, thus bolstering their defense mechanisms against cyberattacks. One recent advancement in the realm of penetration testing is the utilization of Language Models (LLMs). We explore the intersection of LLMs and penetration testing to gain insight into their capabilities and challenges in the context of privilege escalation. We introduce a fully automated privilege-escalation tool designed for evaluating the efficacy of LLMs for (ethical) hacking, executing benchmarks using multiple LLMs, and investigating their respective results. Our results show that GPT-4-turbo is well suited to exploit vulnerabilities (33-83\% of vulnerabilities). GPT-3.5-turbo can abuse 16-50\% of vulnerabilities, while local models, such as Llama3, can only exploit between 0 and 33\% of the vulnerabilities. We analyze the impact of different context sizes, in-context learning, optional high-level guidance mechanisms, and memory management techniques. We discuss challenging areas for LLMs, including maintaining focus during testing, coping with errors, and finally comparing LLMs with human hackers. The current version of the LLM-guided privilege-escalation prototype can be found at https://github.com/ipa-labs/hackingBuddyGPT.},
-  urldate    = {2025-08-09},
-  publisher  = {arXiv},
-  author     = {Happe, Andreas and Kaplan, Aaron and Cito, Juergen},
-  month      = feb,
-  year       = {2025},
-  note       = {arXiv:2310.11409 [cs]},
-  keywords   = {Computer Science - Artificial Intelligence, Computer Science - Cryptography and Security},
-  file       = {Preprint PDF:C\:\\Users\\arifw\\Zotero\\storage\\UICG6VKJ\\Happe et al. - 2025 - LLMs as Hackers Autonomous Linux Privilege Escalation Attacks.pdf:application/pdf;Snapshot:C\:\\Users\\arifw\\Zotero\\storage\\76ISR745\\2310.html:text/html}
+
+@misc{nakano_guided_2025,
+	title = {Guided {Reasoning} in {LLM}-{Driven} {Penetration} {Testing} {Using} {Structured} {Attack} {Trees}},
+	url = {http://arxiv.org/abs/2509.07939},
+	doi = {10.48550/arXiv.2509.07939},
+	abstract = {Recent advances in Large Language Models (LLMs) have driven interest in automating cybersecurity penetration testing workflows, offering the promise of faster and more consistent vulnerability assessment for enterprise systems. Existing LLM agents for penetration testing primarily rely on self-guided reasoning, which can produce inaccurate or hallucinated procedural steps. As a result, the LLM agent may undertake unproductive actions, such as exploiting unused software libraries or generating cyclical responses that repeat prior tactics. In this work, we propose a guided reasoning pipeline for penetration testing LLM agents that incorporates a deterministic task tree built from the MITRE ATT\&CK Matrix, a proven penetration testing kll chain, to constrain the LLM's reaoning process to explicitly defined tactics, techniques, and procedures. This anchors reasoning in proven penetration testing methodologies and filters out ineffective actions by guiding the agent towards more productive attack procedures. To evaluate our approach, we built an automated penetration testing LLM agent using three LLMs (Llama-3-8B, Gemini-1.5, and GPT-4) and applied it to navigate 10 HackTheBox cybersecurity exercises with 103 discrete subtasks representing real-world cyberattack scenarios. Our proposed reasoning pipeline guided the LLM agent through 71.8{\textbackslash}\%, 72.8{\textbackslash}\%, and 78.6{\textbackslash}\% of subtasks using Llama-3-8B, Gemini-1.5, and GPT-4, respectively. Comparatively, the state-of-the-art LLM penetration testing tool using self-guided reasoning completed only 13.5{\textbackslash}\%, 16.5{\textbackslash}\%, and 75.7{\textbackslash}\% of subtasks and required 86.2{\textbackslash}\%, 118.7{\textbackslash}\%, and 205.9{\textbackslash}\% more model queries. This suggests that incorporating a deterministic task tree into LLM reasoning pipelines can enhance the accuracy and efficiency of automated cybersecurity assessments},
+	urldate = {2026-05-24},
+	publisher = {arXiv},
+	author = {Nakano, Katsuaki and Fayyazi, Reza and Yang, Shanchieh Jay and Zuzak, Michael},
+	month = nov,
+	year = {2025},
+	note = {arXiv:2509.07939 [cs.CR]},
+	keywords = {Computer Science - Cryptography and Security, Computer Science - Machine Learning},
+	file = {Preprint PDF:C\:\\Users\\arifw\\Zotero\\storage\\TWVI2F4M\\Nakano et al. - 2025 - Guided Reasoning in LLM-Driven Penetration Testing Using Structured Attack Trees.pdf:application/pdf;Snapshot:C\:\\Users\\arifw\\Zotero\\storage\\762TRDIC\\2509.html:text/html},
+}
+
+@misc{friendliai_2026,
+  author       = {{FriendliAI Corp.}},
+  title        = {{FriendliAI: The Frontier AI Inference Cloud}},
+  year         = {2026},
+  url          = {https://friendli.ai/},
+  note         = {Accessed: 2026-05-24}
 }
 
 @misc{xu_autoattacker_2024,
@@ -663,4 +716,26 @@
   month      = jul,
   year       = {2014},
   pages      = {437--440}
+}
+
+@misc{reddy2024sar,
+  author       = {Reddy, Bhanuprathap},
+  title        = {{Machines I Solved for OSCP (SAR)}},
+  year         = {2024},
+  month        = aug,
+  day          = {17},
+  howpublished = {Medium},
+  url          = {https://avahack.medium.com/machines-i-solved-for-oscp-sar-69e8a4c1b5e9},
+  note         = {Accessed: 2026-05-24}
+}
+
+@misc{iihack2020sar,
+  author       = {{iihack}},
+  title        = {{Vulnhub 425 SAR 1}},
+  year         = {2020},
+  month        = feb,
+  day          = {15},
+  howpublished = {Blog post},
+  url          = {https://www.iihack.com/2020/02/15/vulnhub-425.html},
+  note         = {Accessed: 2026-05-24}
 }
